@@ -1,0 +1,12 @@
+body {
+    margin: 0;
+}
+
+@keyframes doing {
+    from {
+        box-shadow: 0 0 0 .5lh inset rgba(0, 0, 0, .5);
+    }
+    to {
+        box-shadow: 0 0 0 inset rgba(0, 0, 0, .5);
+    }
+}

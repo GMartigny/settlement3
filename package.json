@@ -1,0 +1,35 @@
+{
+    "name": "settlement3",
+    "version": "0.0.0",
+    "description": "Settlement game",
+    "main": "index.html",
+    "scripts": {
+        "lint": "eslint src"
+    },
+    "eslintConfig": {
+        "extends": ["@gmartigny/eslint-config"],
+        "parserOptions": {
+            "ecmaVersion": "latest"
+        },
+        "rules": {
+            "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+        }
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/GMartigny/settlement3.git"
+    },
+    "keywords": [
+        "game"
+    ],
+    "author": "GMartigny",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/GMartigny/settlement3/issues"
+    },
+    "homepage": "https://github.com/GMartigny/settlement3#readme",
+    "devDependencies": {
+        "@gmartigny/eslint-config": "^2.1.0",
+        "eslint": "^8.48.0"
+    }
+}
