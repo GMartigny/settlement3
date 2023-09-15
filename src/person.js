@@ -5,7 +5,10 @@ import Bar from "./bar.js";
 
 /**
  * @typedef {object} PersonData
- * @property {string} name
+ * @property {string} name -
+ * @property {number} [health] -
+ * @property {number} [energy] -
+ * @property {string[]} [actions] -
  */
 
 /**
@@ -20,24 +23,22 @@ export default class Person extends Component {
      * @constructor
      * @param {PersonData} data -
      */
-    constructor ({ name }) {
+    constructor (data) {
         super();
 
-        this.name = name;
-        this.health = new Bar("#be0627");
-        this.energy = new Bar("#099858");
-        this.actions = [];
+        this.name = data.name;
+        this.health = new Bar("#be0627", data.health);
+        this.energy = new Bar("#099858", data.energy);
+        this.actions = (data.actions || []).map(key => new Action(Action.data[key]));
 
         this.#actionsListNode = render("div", {
             class: "actions",
         });
-
-        this.addAction(Action.data.wakeUp);
     }
 
     addAction (...actions) {
-        actions.forEach((data) => {
-            const action = new Action(data);
+        actions.forEach((actionData) => {
+            const action = new Action(actionData);
             this.actions.push(action);
             this.#actionsListNode.appendChild(action.node);
 
@@ -49,7 +50,15 @@ export default class Person extends Component {
                 this.node.classList.remove("busy");
 
                 if (done.unlock) {
-                    this.addAction(...done.unlock.map(key => Action.data[key]));
+                    this.addAction(
+                        ...done.unlock
+                            .filter(key => !this.actions.some(({ data }) => data === Action.data[key]))
+                            .map(key => Action.data[key]),
+                    );
+                }
+
+                if (done.log) {
+                    this.fire("addLog", done.log);
                 }
             });
         });

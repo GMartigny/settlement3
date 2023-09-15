@@ -1,11 +1,11 @@
 /**
  *
- * @param {string} element -
- * @param {object} [props] -
- * @param {array<Node>} [children] -
+ * @param {string} [element = "div"] -
+ * @param {object} [props = {}] -
+ * @param {HTMLElement[]} [children = []] -
  * @returns {HTMLElement}
  */
-function render (element, props = {}, children = []) {
+function render (element = "div", props = {}, children = []) {
     const node = document.createElement(element);
 
     Object.keys(props).forEach(key => node.setAttribute(key, props[key]));

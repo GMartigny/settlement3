@@ -28,6 +28,13 @@ export default class Component {
         return this.#node;
     }
 
+    /**
+     *
+     * @param {string} [element = "div"] -
+     * @param {object} [props = {}] -
+     * @param {HTMLElement[]} [children = []] -
+     * @return {HTMLElement}
+     */
     render (element = "div", props = {}, children = []) {
         return render(element, {
             ...props,

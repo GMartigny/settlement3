@@ -1,10 +1,23 @@
 import Component from "./component.js";
 
 /**
+ * @typedef {object} ActionData
+ * @property {string} name -
+ * @property {number} time -
+ * @property {string} log -
+ * @property {string[]} lock -
+ * @property {string[]} unlock -
+ */
+/**
  * @class Action
  * @extends Component
  */
 export default class Action extends Component {
+    /**
+     *
+     * @constructor
+     * @param {ActionData} data -
+     */
     constructor (data) {
         super();
         this.data = data;
@@ -64,8 +77,9 @@ Action.data = {
     wakeUp: {
         name: "Wake up",
         time: 500,
-        unlock: ["gather"],
+        log: "@name just woke up.",
         lock: ["wakeUp"],
+        unlock: ["gather"],
     },
     gather: {
         name: "Gather",

@@ -14,8 +14,12 @@ Before coming back home, I will try to lay down all I need to do for a fun and e
 ## 06/09/2023 Where to begin ?
 
 After being settled in 😏, I can finally start the dev. Problem is, I have no idea where to go from here. My first task would be to create a simple, yet powerful enough view framework. I love Vue/Svelte one file component, but that would mean writing a template parser and I don't think that's a good idea. I'm more leaning onto a template string style component like React JSX. Then, the issue is how to make reference to a node inside the component.
-Finally, the best solution was inspired by Vue [``h``](https://vuejs.org/guide/extras/render-function.html) function with some memoization to reduce unnecessary renders. 
+Finally, the best solution was inspired by Vue [`h`](https://vuejs.org/guide/extras/render-function.html) function with some memoization to reduce unnecessary renders. 
 Holy cow, [Nested vanilla CSS](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_nesting/Using_CSS_nesting) ? This allows me to easily style to a component using JS.
 I add a simple event listener logic to top it off.
 For now the code is still a mess, but with a better separation of concern, I think I'm on the right tracks.
 Oh, and I quickly configured an eslint.
+
+## 15/09/2023 Inspiration
+
+I didn't get the chance to work as much as I wanted on this because I was busy with other projects (namely [Pencil.js](https://github.com/pencil-js/pencil.js)). But while playing Rimworld, I started to feel the similarity with what I want to achieve with Settlement. Obviously, I don't intend to go as deep nor as complex. The thing that really stroke me was the narrative part of Rimworld. Even if Settlement is gonna be way simpler, I feel like it could engage player if it's able to generate stories (plural). That would need a lot of variety, but not so much complexity.

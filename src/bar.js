@@ -5,13 +5,20 @@ import Component from "./component.js";
  * @extends Component
  */
 export default class Bar extends Component {
-    constructor (color) {
+    /**
+     *
+     * @constructor
+     * @param {string} color -
+     * @param {number} [value = 100] -
+     */
+    constructor (color, value = 100) {
         super();
 
         this.color = color;
+        this.value = value;
     }
 
-    render() {
+    render () {
         return super.render(undefined, {
             style: `background: ${this.color}`,
         });
