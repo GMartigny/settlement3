@@ -1,14 +1,14 @@
 import Component from "./component.js";
 import Action from "./action.js";
-import { render } from "./viewBuilder";
+import { render, reactive } from "./viewBuilder";
 import Bar from "./bar.js";
 
 /**
  * @typedef {object} PersonData
- * @property {string} name -
- * @property {number} [health] -
- * @property {number} [energy] -
- * @property {string[]} [actions] -
+ * @property {string} name - Name of the person
+ * @property {number} [health] - Health (0 - 100)
+ * @property {number} [energy] - Energy (0 - 100)
+ * @property {string[]} [actions] - List of actions ID
  */
 
 /**
@@ -16,8 +16,6 @@ import Bar from "./bar.js";
  * @extends Component
  */
 export default class Person extends Component {
-    #actionsListNode;
-
     /**
      *
      * @constructor
@@ -27,27 +25,33 @@ export default class Person extends Component {
         super();
 
         this.name = data.name;
+        this.busy = false;
         this.health = new Bar("#be0627", data.health);
         this.energy = new Bar("#099858", data.energy);
         this.actions = (data.actions || []).map(key => new Action(Action.data[key]));
+    }
 
-        this.#actionsListNode = render("div", {
-            class: "actions",
-        });
+    toggleBusy () {
+        this.busy = !this.busy;
+        this.node.classList.toggle("busy", this.busy);
+        this.actions.forEach(({ node }) => node[this.busy ? "setAttribute" : "removeAttribute"]("disabled", true));
     }
 
     addAction (...actions) {
         actions.forEach((actionData) => {
             const action = new Action(actionData);
             this.actions.push(action);
-            this.#actionsListNode.appendChild(action.node);
 
             action.on("start", () => {
-                this.node.classList.add("busy");
+                this.toggleBusy();
             });
 
             action.on("end", (done) => {
-                this.node.classList.remove("busy");
+                this.toggleBusy();
+
+                if (done.earn) {
+                    // TODO
+                }
 
                 if (done.unlock) {
                     this.addAction(
@@ -57,6 +61,16 @@ export default class Person extends Component {
                     );
                 }
 
+                if (done.lock) {
+                    this.removeAction(
+                        ...done.lock.map(key => Action.data[key]),
+                    );
+                }
+
+                if (done.once) {
+                    this.removeAction(done);
+                }
+
                 if (done.log) {
                     this.fire("addLog", done.log);
                 }
@@ -64,12 +78,20 @@ export default class Person extends Component {
         });
     }
 
+    removeAction (...actions) {
+        actions.forEach((actionData) => {
+            this.actions.splice(this.actions.findIndex(act => act.data === actionData), 1);
+        });
+    }
+
     render () {
         return super.render(undefined, undefined, [
-            this.name,
+            reactive(this, "name"),
             this.health.node,
             this.energy.node,
-            this.#actionsListNode,
+            reactive(this, "actions", render(undefined, {
+                class: "actions",
+            })),
         ]);
     }
 
@@ -79,6 +101,8 @@ export default class Person extends Component {
             border: "1px solid black",
 
             ".actions": {
+                display: "flex",
+                gap: "10px",
                 padding: "10px",
             },
 

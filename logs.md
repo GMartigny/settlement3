@@ -23,3 +23,10 @@ Oh, and I quickly configured an eslint.
 ## 15/09/2023 Inspiration
 
 I didn't get the chance to work as much as I wanted on this because I was busy with other projects (namely [Pencil.js](https://github.com/pencil-js/pencil.js)). But while playing Rimworld, I started to feel the similarity with what I want to achieve with Settlement. Obviously, I don't intend to go as deep nor as complex. The thing that really stroke me was the narrative part of Rimworld. Even if Settlement is gonna be way simpler, I feel like it could engage player if it's able to generate stories (plural). That would need a lot of variety, but not so much complexity.
+
+## 17/10/2023 Slow but strong
+
+As I feared, the main thing this logs will be able to show is that I'm too good at procrastination.
+However, today I managed to make the one-way reactivity (from variable to view) work. I don't think I'm going to need the other way (from view to variable [used for inputs]), so I'm done with the bare-bone of the engine part. This is going to need more attention, to refactor, to make things pretty and performant, but I'm happy with it for now.
+I played a lot of Citizen Sleeper the last few days. It has given me a lot of ideas and motivation, but also a dreading sense of the amount of work left.
+I'll not able to lean on my writing skills to make the game work. So, it will need a lot of good and balanced game mechanics.

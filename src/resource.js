@@ -26,3 +26,13 @@ export default class Resource extends Component {
         return super.render();
     }
 }
+Resource.data = {
+    water: {
+        name: "Water",
+        description: "Much needed to survive",
+    },
+    food: {
+        name: "Food",
+        description: "Expiration date says 2 years ago, but it's not a time to be picky.",
+    },
+};

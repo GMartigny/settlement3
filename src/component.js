@@ -32,7 +32,7 @@ export default class Component {
      *
      * @param {string} [element = "div"] -
      * @param {object} [props = {}] -
-     * @param {HTMLElement[]} [children = []] -
+     * @param {(HTMLElement|*)[]} [children = []] -
      * @return {HTMLElement}
      */
     render (element = "div", props = {}, children = []) {
