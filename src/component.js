@@ -1,4 +1,4 @@
-import { render, renderStyle } from "./viewBuilder";
+import { render, renderStyle } from "./viewBuilder/";
 import EventEmitter from "./EventEmitter.js";
 
 /**

@@ -1,5 +1,5 @@
 import Person from "./person.js";
-import { reactive, render } from "./viewBuilder";
+import { reactive, render } from "./viewBuilder/";
 import Component from "./component.js";
 import Log from "./log.js";
 import Action from "./action.js";

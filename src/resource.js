@@ -1,5 +1,5 @@
 import Component from "./component.js";
-import { reactive, render } from "./viewBuilder";
+import { reactive, render } from "./viewBuilder/";
 import { pluralize } from "./utils.js";
 
 /**

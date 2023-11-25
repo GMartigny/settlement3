@@ -1,6 +1,6 @@
 import Component from "./component.js";
 import Action from "./action.js";
-import { render, reactive } from "./viewBuilder";
+import { render, reactive } from "./viewBuilder/";
 import Bar from "./bar.js";
 import Log from "./log.js";
 import { join, pluralize } from "./utils.js";
