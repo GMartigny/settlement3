@@ -1,9 +1,11 @@
 import Component from "./component.js";
+import { reactive, render } from "./viewBuilder";
+import { pluralize } from "./utils.js";
 
 /**
  * @typedef {object} ResourceData
  * @property {string} name
- *
+ * @property {string} description
  */
 /**
  * @class Resource
@@ -22,8 +24,22 @@ export default class Resource extends Component {
         this.amount = amount;
     }
 
+    /**
+     * @inheritDoc
+     */
     render () {
-        return super.render();
+        return super.render(undefined, {
+            class: this.data.name.toLowerCase(),
+        }, [
+            render("i", {
+                class: "icon",
+            }),
+            reactive(
+                this,
+                "amount",
+                (amount, node) => render(node || "span", undefined, [`${amount} ${pluralize(this.data.name, amount)}`]),
+            ),
+        ]);
     }
 }
 Resource.data = {

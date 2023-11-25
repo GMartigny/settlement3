@@ -1,15 +1,19 @@
 import { render, renderStyle } from "./viewBuilder";
+import EventEmitter from "./EventEmitter.js";
 
 /**
  * @class Component
  */
-export default class Component {
+export default class Component extends EventEmitter {
+    /**
+     * @type {HTMLElement}
+     */
     #node;
 
-    #eventListeners = {};
-
+    /**
+     */
     stylize () {
-        if (!this.constructor.styled && this.constructor.style) {
+        if (!this.constructor.styled) {
             const style = document.createElement("style");
             style.textContent = `.${this.constructor.name.toLowerCase()} {${renderStyle(this.constructor.style)}
 }`;
@@ -18,6 +22,9 @@ export default class Component {
         }
     }
 
+    /**
+     * @return {HTMLElement}
+     */
     get node () {
         this.stylize();
 
@@ -29,30 +36,22 @@ export default class Component {
     }
 
     /**
-     *
-     * @param {string} [element = "div"] -
-     * @param {object} [props = {}] -
+     * @param {string} [element] -
+     * @param {Object} [props = {}] -
      * @param {(HTMLElement|*)[]} [children = []] -
      * @return {HTMLElement}
      */
-    render (element = "div", props = {}, children = []) {
+    render (element, props = {}, children = []) {
         return render(element, {
             ...props,
-            class: this.constructor.name.toLowerCase(),
+            class: `${this.constructor.name.toLowerCase()}${props.class ? ` ${props.class}` : ""}`,
         }, children);
     }
 
-    on (eventName, listener) {
-        if (!this.#eventListeners[eventName]) {
-            this.#eventListeners[eventName] = [];
-        }
-
-        this.#eventListeners[eventName].push(listener);
-    }
-
-    fire (eventName, data) {
-        if (this.#eventListeners[eventName]) {
-            this.#eventListeners[eventName].forEach(listener => listener(data));
-        }
+    /**
+     * @return {Object}
+     */
+    static get style () {
+        return {};
     }
 }

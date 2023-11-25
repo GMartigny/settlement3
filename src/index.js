@@ -8,6 +8,8 @@ window.game = game;
 mainNode.appendChild(game.node);
 document.body.appendChild(mainNode);
 
-game.addPerson({
-    name: "Jim",
-});
+setTimeout(() => {
+    game.addPerson({
+        name: "Jim",
+    });
+}, 1000);

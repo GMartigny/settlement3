@@ -11,7 +11,7 @@ In 2020, with some experience with Vue.js, I [revive the project](https://github
 So, third time the charm I hope. The goal will be to ship a working prototype as soon as possible to avoid scope creep like the first time. Secondly, I choose to create my own "game engine". I don't need anything complicated, and it will be more flexible this way. I also hope to learn a bit about JS framework creation.
 Before coming back home, I will try to lay down all I need to do for a fun and engaging version 1 and gather some building material.
 
-## 06/09/2023 Where to begin ?
+## 06/09/2023 Where to begin ? (v0.0)
 
 After being settled in 😏, I can finally start the dev. Problem is, I have no idea where to go from here. My first task would be to create a simple, yet powerful enough view framework. I love Vue/Svelte one file component, but that would mean writing a template parser and I don't think that's a good idea. I'm more leaning onto a template string style component like React JSX. Then, the issue is how to make reference to a node inside the component.
 Finally, the best solution was inspired by Vue [`h`](https://vuejs.org/guide/extras/render-function.html) function with some memoization to reduce unnecessary renders. 
@@ -27,6 +27,16 @@ I didn't get the chance to work as much as I wanted on this because I was busy w
 ## 17/10/2023 Slow but strong
 
 As I feared, the main thing this logs will be able to show is that I'm too good at procrastination.
-However, today I managed to make the one-way reactivity (from variable to view) work. I don't think I'm going to need the other way (from view to variable [used for inputs]), so I'm done with the bare-bone of the engine part. This is going to need more attention, to refactor, to make things pretty and performant, but I'm happy with it for now.
+However, today I managed to make the one-way reactivity (from variable to view) work. I don't think I'm going to need the other way (from view to variable [used by inputs]), so I'm done with the bare-bone of the engine part. This is going to need more attention, to refactor, to make things pretty and performant, but I'm happy with it for now.
 I played a lot of Citizen Sleeper the last few days. It has given me a lot of ideas and motivation, but also a dreading sense of the amount of work left.
 I'll not able to lean on my writing skills to make the game work. So, it will need a lot of good and balanced game mechanics.
+
+![v0.0](./media/v0.0.png)
+
+## 25/11/2023 Is this a framework ? (v0.1)
+
+I underestimate the lack of desire to redo the same project for the third time. It feels a bit like the Sisyphus torment.
+At least, today I made huge progress. My ""framework"" is finally capable enough to be able to build nested dynamic component. This is a bit like seeing something come to life. Every new component I add is injected in the DOM and is updated accordingly.
+Still a lot to do, but I can move quicker now.
+
+![v0.1](./media/v0.1.png)
