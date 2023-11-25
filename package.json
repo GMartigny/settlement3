@@ -1,18 +1,26 @@
 {
     "name": "settlement3",
-    "version": "0.0.0",
+    "version": "0.1.0",
     "description": "Settlement game",
     "main": "index.html",
     "scripts": {
         "lint": "eslint src"
     },
     "eslintConfig": {
-        "extends": ["@gmartigny/eslint-config"],
+        "extends": [
+            "@gmartigny/eslint-config"
+        ],
         "parserOptions": {
             "ecmaVersion": "latest"
         },
         "rules": {
-            "lines-between-class-members": ["error", "always", { "exceptAfterSingleLine": true }]
+            "lines-between-class-members": [
+                "error",
+                "always",
+                {
+                    "exceptAfterSingleLine": true
+                }
+            ]
         }
     },
     "repository": {
