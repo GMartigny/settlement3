@@ -2,6 +2,12 @@ import { render, renderStyle } from "./viewBuilder/";
 import EventEmitter from "./EventEmitter.js";
 
 /**
+ * @typedef {Object} ComponentData
+ * @property {string} name
+ * @property {string} description
+ */
+
+/**
  * @class Component
  */
 export default class Component extends EventEmitter {

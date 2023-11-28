@@ -4,6 +4,7 @@ import { render, reactive } from "./viewBuilder/";
 import Bar from "./bar.js";
 import Log from "./log.js";
 import { join, pluralize } from "./utils.js";
+import Resource from "./resource.js";
 
 /**
  * @typedef {object} PersonData
@@ -61,7 +62,7 @@ export default class Person extends Component {
                 let earnings = [];
                 if (done.earn) {
                     earnings = done.earn;
-                    this.fire("earnResources", earnings);
+                    this.fire(Resource.events.earn, earnings);
                 }
 
                 if (done.unlock) {
@@ -130,6 +131,11 @@ export default class Person extends Component {
             gap: "10px",
             padding: "15px",
             border: "1px solid #666",
+            transition: "transform ease .3s",
+
+            "&.hidden": {
+                transform: "translate3d(-100%, 0, 0)",
+            },
 
             ".name": {
                 margin: "0",

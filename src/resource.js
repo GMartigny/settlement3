@@ -4,9 +4,9 @@ import { pluralize } from "./utils.js";
 
 /**
  * @typedef {object} ResourceData
- * @property {string} name
- * @property {string} description
+ * @extends {ComponentData}
  */
+
 /**
  * @class Resource
  * @extends Component
@@ -41,6 +41,16 @@ export default class Resource extends Component {
             ),
         ]);
     }
+
+    /**
+     * @inheritDoc
+     */
+    static get style () {
+        return {
+            display: "flex",
+            "align-items": "center",
+        };
+    }
 }
 Resource.data = {
     water: {
@@ -51,4 +61,7 @@ Resource.data = {
         name: "Food",
         description: "Expiration date says 2 years ago, but it's not a time to be picky.",
     },
+};
+Resource.events = {
+    earn: "earnResources",
 };

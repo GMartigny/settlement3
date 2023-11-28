@@ -5,6 +5,8 @@ import Log from "./log.js";
 import Action from "./action.js";
 import Resource from "./resource.js";
 import Bus from "./bus.js";
+import Building from "./building.js";
+import Save from "./save.js";
 
 /**
  * @class Game
@@ -28,15 +30,17 @@ export default class Game extends Component {
          * @type {Log[]}
          */
         this.logs = [];
-
         /**
-         * @type {string[]}
+         * @type {Building[]}
          */
-        this.unlockedActions = [];
+        this.buildings = [];
+
+        this.save = new Save(window.localStorage);
 
         Bus.on("addPerson", this.addPerson.bind(this));
         Bus.on("addLog", this.addLog.bind(this));
-        Bus.on("earnResources", this.earnResources.bind(this));
+        Bus.on(Resource.events.earn, this.earnResources.bind(this));
+        Bus.on(Building.events.build, this.buildBuilding.bind(this));
     }
 
     /**
@@ -44,12 +48,9 @@ export default class Game extends Component {
      */
     addPerson (...persons) {
         persons.forEach((personData) => {
-            const person = new Person({
-                ...personData,
-                actions: this.unlockedActions,
-            });
+            const person = new Person(personData);
             person.on("addLog", this.addLog.bind(this));
-            person.on("earnResources", this.earnResources.bind(this));
+            person.on(Resource.events.earn, this.earnResources.bind(this));
             this.persons.push(person);
             person.addAction(Action.data.wakeUp);
         });
@@ -78,6 +79,13 @@ export default class Game extends Component {
     }
 
     /**
+     * @param {BuildingData} data -
+     */
+    buildBuilding (data) {
+        this.buildings.push(new Building(data));
+    }
+
+    /**
      * @inheritDoc
      */
     render () {
@@ -102,33 +110,45 @@ export default class Game extends Component {
      * @inheritDoc
      */
     static get style () {
-        const display = "flex";
+        const flex = {
+            display: "flex",
+        };
+        const margin = "5px";
+        const spaced = {
+            ...flex,
+            padding: margin,
+            gap: margin,
+        };
 
         return {
-            display,
+            ...flex,
             "flex-direction": "column",
             height: "100vh",
             background: "#0B141A",
             color: "#fff",
 
-            ".resources, .persons, .logs": {
-                padding: "5px",
-            },
-
             ".resources": {
-                display,
+                ...spaced,
+                height: "2em",
                 gap: "1em",
                 background: "#855715",
+                transition: "transform ease .3s",
+
+                "&:empty": {
+                    transform: "translate3d(0, -100%, 0)",
+                },
             },
 
             ".main": {
-                display,
                 flex: "1 auto",
+                ...flex,
                 overflow: "auto",
             },
 
             ".persons, .logs": {
                 flex: "1 50%",
+                ...spaced,
+                "flex-direction": "column",
             },
         };
     }

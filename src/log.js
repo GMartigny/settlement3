@@ -61,7 +61,6 @@ export default class Log extends Component {
     static get style () {
         return {
             "padding-bottom": "5px",
-            "margin-bottom": "5px",
             "border-bottom": "1px dashed #66666688",
 
             "&.quote": {

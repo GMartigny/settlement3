@@ -5,13 +5,16 @@ import Log from "./log.js";
 
 /**
  * @typedef {object} ActionData
- * @property {string} name -
+ * @extends {ComponentData}
  * @property {number} time -
  * @property {string} log -
- * @property {string[]} lock -
- * @property {string[]} unlock -
- * @property {function} onEnd -
+ * @property {string[]} [lock] -
+ * @property {string[]} [unlock] -
+ * @property {string} [build] -
+ * @property {string} [destroy] -
+ * @property {function} [onEnd] -
  */
+
 /**
  * @class Action
  * @extends Component

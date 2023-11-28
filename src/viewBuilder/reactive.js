@@ -28,30 +28,49 @@ function reactiveNode (context, target, render) {
 }
 
 /**
+ * @callback {ChangeCallback}
+ * @param {string} name -
+ * @param {*[]} args -
+ */
+/**
  * Copy of Array class to preserve its prototype
  * @class
  * @extends Array
  */
 class EmitterArray extends Array {
+    #onChange;
+
+    /**
+     * @param {ChangeCallback} callback -
+     */
+    setOnChange (callback) {
+        this.#onChange = callback;
+    }
+
+    /**
+     * @param {...*} args -
+     */
+    push (...args) {
+        super.push(...args);
+        this.#onChange?.("push", args);
+    }
+
+    /**
+     * @param {...*} args -
+     */
+    unshift (...args) {
+        super.unshift(...args);
+        this.#onChange?.("unshift", args);
+    }
+
+    /**
+     * @param {...*} args -
+     */
+    splice (...args) {
+        super.splice(...args);
+        this.#onChange?.("splice", args);
+    }
 }
-
-[
-    "push",
-    "pop",
-    "shift",
-    "unshift",
-    "splice",
-    "sort",
-    "reverse",
-].forEach((name) => {
-    EmitterArray.prototype[name] = function (...args) {
-        Array.prototype[name].apply(this, args);
-
-        if (this.onChange) {
-            this.onChange(name, args);
-        }
-    };
-});
 
 /**
  * @param {Object} context -
@@ -60,8 +79,8 @@ class EmitterArray extends Array {
  * @return {*}
  */
 function reactiveArray (context, target, render) {
-    let value = new EmitterArray(...context[target]);
-    const wrapper = render(value);
+    let values = new EmitterArray(...context[target]);
+    const wrapper = render(values);
 
     /**
      * @param {string} func -
@@ -94,20 +113,23 @@ function reactiveArray (context, target, render) {
                 });
                 break;
             default:
+                if (wrapper.innerHTML) {
+                    console.warn("Total reflow of", wrapper);
+                }
                 wrapper.innerHTML = "";
-                value.forEach(each => wrapper.appendChild(render(each)));
+                values.forEach(({ node }) => wrapper.appendChild(node));
         }
     }
-    value.onChange = reflow;
+    values.setOnChange(reflow);
 
     Object.defineProperty(context, target, {
-        get: () => value,
+        get: () => values,
         set: (newValue) => {
             if (!Array.isArray(newValue)) {
                 throw new Error(`Value of ${target} should be an array.`);
             }
-            value = new EmitterArray(...newValue);
-            reflow("set");
+            values = new EmitterArray(...newValue);
+            reflow("init");
         },
     });
 

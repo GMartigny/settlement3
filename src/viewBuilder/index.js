@@ -1,20 +1,26 @@
 import reactive from "./reactive.js";
 
 /**
- * @typedef {function} Render3Args
  * @param {string|HTMLElement} [element = "div"] -
  * @param {Object} [props] -
  * @param {(HTMLElement|string)[]} [children] -
  * @returns {HTMLElement}
  */
-function render (element = "div", props = {}, children = []) {
-    const node = element instanceof HTMLElement ? element : document.createElement(element);
+function render (element, props = {}, children = []) {
+    const node = element instanceof HTMLElement ? element : document.createElement(element || "div");
 
-    Object.keys(props).forEach(
-        key => (key.startsWith(".") ?
-            node[key] = props[key.slice(1)] :
-            node.setAttribute(key, props[key])),
-    );
+    Object.keys(props).forEach((key) => {
+        switch (true) {
+            case key.startsWith("."):
+                node[key] = props[key.slice(1)];
+                break;
+            case key.startsWith("@"):
+                node.addEventListener(key.slice(1), props[key]);
+                break;
+            default:
+                node.setAttribute(key, props[key]);
+        }
+    });
 
     children.forEach(child => node.appendChild(typeof child === "string" ? new Text(child) : child));
 
