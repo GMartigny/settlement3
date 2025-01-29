@@ -2,9 +2,10 @@
     "name": "settlement3",
     "version": "0.1.1",
     "description": "Settlement game",
-    "main": "index.html",
     "scripts": {
-        "lint": "eslint src"
+        "lint": "eslint src",
+        "dev": "parcel index.html",
+        "build": "parcel build index.html"
     },
     "repository": {
         "type": "git",
@@ -19,8 +20,12 @@
         "url": "https://github.com/GMartigny/settlement3/issues"
     },
     "homepage": "https://github.com/GMartigny/settlement3#readme",
+    "dependencies": {
+        "@gmartigny/whiskers.js": "^1.1.0"
+    },
     "devDependencies": {
         "@gmartigny/eslint-config": "^2.1.0",
-        "eslint": "^8.48.0"
+        "eslint": "^8.48.0",
+        "parcel": "^2.13.3"
     }
 }

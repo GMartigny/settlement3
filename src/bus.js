@@ -1,32 +1,14 @@
-import EventEmitter from "./EventEmitter.js";
+const listeners = {};
 
-/**
- * @class
- */
-export default class Bus {
-    /**
-     * @constructor
-     * @throws Error
-     */
-    constructor () {
-        throw new Error("Invalid constructor invocation");
-    }
+export default {
+    on (eventName, callback) {
+        if (!listeners[eventName]) {
+            listeners[eventName] = [];
+        }
 
-    static #emitter = new EventEmitter();
-
-    /**
-     * @param {string} eventName -
-     * @param {EventListener} listener -
-     */
-    static on (eventName, listener) {
-        this.#emitter.on(eventName, listener);
-    }
-
-    /**
-     * @param {string} eventName -
-     * @param {...*} data -
-     */
-    static fire (eventName, ...data) {
-        this.#emitter.fire(eventName, ...data);
-    }
-}
+        listeners[eventName].push(callback);
+    },
+    fire (eventName, data) {
+        listeners[eventName]?.forEach(callback => callback(data));
+    },
+};
