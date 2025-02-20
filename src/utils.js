@@ -1,7 +1,7 @@
 /**
- * @param {Array} array -
- * @param {string} separator -
- * @param {string} final -
+ * @param {Array} array Array of strings
+ * @param {string} separator Separator between items
+ * @param {string} final Final separator
  * @return {string}
  */
 function join (array, separator = ", ", final = "and") {
@@ -9,8 +9,8 @@ function join (array, separator = ", ", final = "and") {
 }
 
 /**
- * @param {number} [min = 1] -
- * @param {number} [max] -
+ * @param {number} [min = 1] Maximum value if only one argument is provided, minimum value otherwise
+ * @param {number} [max] Maximum value
  * @return {number}
  */
 function random (min = 1, max = undefined) {
@@ -24,22 +24,34 @@ function random (min = 1, max = undefined) {
 }
 
 /**
- * @param {string} word -
- * @param {number} count -
+ * @param {string} word Any word
+ * @param {number} count Amount of items
  * @return {string}
  */
 function pluralize (word, count) {
-    return `${word}${count > 1 ? "s" : ""}`;
+    return `${count} ${word}${count > 1 ? "s" : ""}`;
 }
 
 /**
- * @param {number} value -
- * @param {number} min -
- * @param {number} max -
+ * @param {number} value Any number
+ * @param {number} min Minimum value
+ * @param {number} max Maximum value
  * @return {number}
  */
 function clamp (value, min, max) {
     return Math.min(max, Math.max(min, value));
+}
+
+/**
+ * @param {string} eventName Event's name
+ * @param {EventTarget} [target=window] Triggering element
+ * @param {Object} [detail] Some details to attach
+ */
+function dispatch (eventName, target = window, detail = undefined) {
+    target.dispatchEvent(new CustomEvent(eventName, {
+        bubbles: true,
+        detail,
+    }));
 }
 
 export {
@@ -47,4 +59,5 @@ export {
     random,
     pluralize,
     clamp,
+    dispatch,
 };

@@ -40,3 +40,11 @@ At least, today I made huge progress. My ""framework"" is finally capable enough
 Still a lot to do, but I can move quicker now.
 
 ![v0.1](./media/v0.1.png)
+
+## 20/02/2025 Oops I did it again
+
+Guess who rewrite basically everything from scratch to test a new thing ?
+This time I took advantage of [Whiskers.js](https://github.com/GMartigny/Whiskers.js) a library a wrote
+following the work I've done with the render function. Everything is written with a functional style which change a lot
+from my usual safe zone. Still, I have to admit this makes the code pretty tidy and reusable event if it's way less readable.
+Depending on Whiskers.js forced me to use a bundler. I chose [Parcel](https://parceljs.org/) because I know it, and I know it's very easy to use. In the same time, I also added [Pencil.js](https://github.com/pencil-js/pencil.js) as a dependency and set up a simple scene to have something to look at.

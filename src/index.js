@@ -1,15 +1,22 @@
-import Game from "./game.js";
+import { renderStyle } from "@gmartigny/whiskers.js";
+import { variables } from "./css";
+import game from "./game";
 
-const mainNode = document.createElement("main");
+document.body.appendChild(game.render());
 
-const game = new Game();
-window.game = game;
+document.head.appendChild(renderStyle({
+    html: {
+        overflow: "hidden",
+    },
+    body: {
+        background: variables.black,
+    },
+    "*": {
+        margin: "0",
+        padding: "0",
+        "box-sizing": "border-box",
+        color: "#fff",
+    },
 
-mainNode.appendChild(game.node);
-document.body.appendChild(mainNode);
-
-setTimeout(() => {
-    game.addPerson({
-        name: "Jim",
-    });
-}, 1000);
+    ...game.styles,
+}));

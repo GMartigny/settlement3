@@ -1,154 +1,79 @@
-import Component from "./component.js";
-import Action from "./action.js";
-import { render, reactive } from "./viewBuilder/";
-import Bar from "./bar.js";
-import Log from "./log.js";
-import { join, pluralize } from "./utils.js";
-import Resource from "./resource.js";
+import { render, reactive } from "@gmartigny/whiskers.js";
+import action, { events as actionEvents } from "./action";
+import { flow } from "./css";
+import { events as loggerEvents } from "./logger";
+import { pluralize, join, dispatch } from "./utils";
+import { events as resourceEvents } from "./resource";
 
 /**
- * @typedef {object} PersonData
- * @property {string} name - Name of the person
- * @property {number} [health = 100] - Health (0 - 100)
- * @property {number} [energy = 100] - Energy (0 - 100)
- * @property {string[]} [actions] - List of actions ID
+ * @typedef {Object} Person
+ * @prop {string} name
+ * @prop {number} health
+ * @prop {number} energy
  */
 
-/**
- * @class Person
- * @extends Component
- */
-export default class Person extends Component {
-    /**
-     * @constructor
-     * @param {PersonData} data -
-     */
-    constructor (data) {
-        super();
+export const events = {
+    arrive: "person-arrive",
+    die: "person-die",
+};
 
-        this.name = data.name;
-        this.busy = false;
-        this.health = new Bar("#d21b3a", data.health);
-        this.energy = new Bar("#29be7c", data.energy);
-        this.actions = (data.actions || []).map(key => new Action(Action.data[key]));
-    }
+export default {
+    render (value, node) {
+        const element = render(node, {
+            class: "person",
+            [`@${actionEvents.end}`]: ({ detail }) => {
+                const data = {
+                    person: value,
+                    action: detail,
+                };
 
-    /**
-     */
-    toggleBusy () {
-        this.busy = !this.busy;
-        this.node.classList.toggle("busy", this.busy);
-        this.actions.forEach(({ node }) => node[this.busy ? "setAttribute" : "removeAttribute"]("disabled", true));
-    }
-
-    /**
-     * @param {...ActionData} actions -
-     */
-    addAction (...actions) {
-        actions.forEach((actionData) => {
-            const action = new Action(actionData);
-            this.actions.push(action);
-
-            action.on("start", (started) => {
-                this.toggleBusy();
-                if (started.energy) {
-                    this.energy.value -= started.energy;
-                }
-            });
-
-            action.on("end", (done) => {
-                this.toggleBusy();
-
-                let earnings = [];
-                if (done.earn) {
-                    earnings = done.earn;
-                    this.fire(Resource.events.earn, earnings);
+                if (detail.once) {
+                    value.actions.splice(value.actions.indexOf(detail), 1);
                 }
 
-                if (done.unlock) {
-                    this.addAction(
-                        ...done.unlock
-                            .filter(key => !this.actions.some(({ data }) => data === Action.data[key]))
-                            .map(key => Action.data[key]),
-                    );
+                if (detail.unlock?.length) {
+                    data.unlock = detail.unlock;
+                    value.actions.push(...detail.unlock);
                 }
 
-                if (done.lock) {
-                    this.removeAction(
-                        ...done.lock.map(key => Action.data[key]),
-                    );
+                if (detail.earn?.length) {
+                    data.earn = join(detail.earn.map(([amount, resource]) => pluralize(resource.name, amount)));
+                    dispatch(resourceEvents.earn, element, detail.earn);
                 }
 
-                if (done.once) {
-                    this.removeAction(done);
+                if (detail.log) {
+                    dispatch(loggerEvents.addLog, element, {
+                        message: detail.log,
+                        data,
+                    });
                 }
-
-                if (done.log) {
-                    this.fire("addLog", Log.replace(done.log, {
-                        person: this,
-                        action: done,
-                        resources: join(earnings.map(([amount, { name }]) => `${amount} ${pluralize(name, amount)}`)),
-                    }));
-                }
-            });
-        });
-    }
-
-    /**
-     * @param {...ActionData} actions -
-     */
-    removeAction (...actions) {
-        actions.forEach((actionData) => {
-            this.actions.splice(this.actions.findIndex(act => act.data === actionData), 1);
-        });
-    }
-
-    /**
-     * @inheritDoc
-     */
-    render () {
-        return super.render(undefined, undefined, [
-            reactive(this, "name", (name, node) => render(node || "h2", {
+            },
+        }, [
+            render("h2", {
                 class: "name",
-            }, [name])),
-            render(undefined, undefined, [
-                this.health.node,
-                this.energy.node,
-            ]),
-            reactive(this, "actions", actions => render(undefined, {
-                class: "actions",
-            }, actions)),
+            }, [value.name]),
+
+            reactive(
+                value,
+                "actions",
+                (init, list) => render(list, {
+                    class: "actions",
+                }, init),
+                action.render,
+            ),
         ]);
-    }
 
-    /**
-     * @inheritDoc
-     */
-    static get style () {
-        return {
-            display: "flex",
-            "flex-direction": "column",
-            gap: "10px",
-            padding: "15px",
-            border: "1px solid #666",
-            transition: "transform ease .3s",
-
-            "&.hidden": {
-                transform: "translate3d(-100%, 0, 0)",
-            },
-
-            ".name": {
-                margin: "0",
-            },
+        return element;
+    },
+    styles: {
+        ".person": {
+            padding: "2em",
 
             ".actions": {
-                display: "flex",
-                gap: "10px",
-            },
+                ...flow.flex(),
 
-            "&.busy .action:not(.doing)": {
-                opacity: ".5",
+                ...action.styles,
             },
-        };
-    }
-}
+        },
+    },
+};
