@@ -1,9 +1,9 @@
 import { render, reactive } from "@gmartigny/whiskers.js";
-import action, { events as actionEvents } from "./action.js";
-import { flow } from "./css.js";
-import bus from "./bus.js";
-import { events as loggerEvents } from "./logger.js";
-import { pluralize, join } from "./utils";
+import action, { events as actionEvents } from "./action";
+import { flow } from "./css";
+import { events as loggerEvents } from "./logger";
+import { pluralize, join, dispatch } from "./utils";
+import { events as resourceEvents } from "./resource";
 
 /**
  * @typedef {Object} Person
@@ -13,42 +13,41 @@ import { pluralize, join } from "./utils";
  */
 
 export const events = {
-    arrive: Symbol("person-arrive"),
-    die: Symbol("person-die"),
+    arrive: "person-arrive",
+    die: "person-die",
 };
 
 export default {
     render (value, node) {
-        bus.on(actionEvents.end, (done) => {
-            const data = {
-                person: value,
-                action: done,
-            };
-
-            if (done.once) {
-                value.actions.splice(value.actions.indexOf(done), 1);
-            }
-
-            if (done.unlock?.length) {
-                data.unlock = done.unlock;
-                value.actions.push(...done.unlock);
-            }
-
-            if (done.earn?.length) {
-                data.earn = join(done.earn.map(([amount, resource]) => pluralize(resource.name, amount)));
-                bus.fire();
-            }
-
-            if (done.log) {
-                bus.fire(loggerEvents.addLog, {
-                    message: done.log,
-                    data,
-                });
-            }
-        });
-
-        return render(node ?? "li", {
+        const element = render(node, {
             class: "person",
+            [`@${actionEvents.end}`]: ({ detail }) => {
+                const data = {
+                    person: value,
+                    action: detail,
+                };
+
+                if (detail.once) {
+                    value.actions.splice(value.actions.indexOf(detail), 1);
+                }
+
+                if (detail.unlock?.length) {
+                    data.unlock = detail.unlock;
+                    value.actions.push(...detail.unlock);
+                }
+
+                if (detail.earn?.length) {
+                    data.earn = join(detail.earn.map(([amount, resource]) => pluralize(resource.name, amount)));
+                    dispatch(resourceEvents.earn, element, detail.earn);
+                }
+
+                if (detail.log) {
+                    dispatch(loggerEvents.addLog, element, {
+                        message: detail.log,
+                        data,
+                    });
+                }
+            },
         }, [
             render("h2", {
                 class: "name",
@@ -63,6 +62,8 @@ export default {
                 action.render,
             ),
         ]);
+
+        return element;
     },
     styles: {
         ".person": {

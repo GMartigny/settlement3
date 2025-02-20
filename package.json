@@ -21,11 +21,13 @@
     },
     "homepage": "https://github.com/GMartigny/settlement3#readme",
     "dependencies": {
-        "@gmartigny/whiskers.js": "^1.1.0"
+        "@gmartigny/whiskers.js": "^1.1.0",
+        "pencil.js": "^3.2.0"
     },
     "devDependencies": {
         "@gmartigny/eslint-config": "^2.1.0",
         "eslint": "^8.48.0",
-        "parcel": "^2.13.3"
+        "parcel": "^2.13.3",
+        "process": "^0.11.10"
     }
 }

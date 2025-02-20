@@ -1,24 +1,27 @@
 import { render } from "@gmartigny/whiskers.js";
-import timer from "./timer.js";
-import { clickable } from "./css.js";
-import bus from "./bus.js";
+import timer from "./timer";
+import { clickable } from "./css";
+import { dispatch } from "./utils";
 
 export const events = {
-    end: Symbol("action-end"),
+    start: "action-start",
+    end: "action-end",
 };
 
 export default {
     render (value, node) {
+        let element;
         /**
          */
         function done () {
-            value.onEnd?.();
-            bus.fire(events.end, value);
+            value.onEnd?.(element);
+            dispatch(events.end, element, value);
         }
 
-        return render(node ?? "button", {
+        element = render(node ?? "button", {
             class: "action",
             "@click": () => {
+                dispatch(events.start, element, value);
                 if (value.time) {
                     timer(done, value.time);
                 }
@@ -29,6 +32,8 @@ export default {
         }, [
             value.name,
         ]);
+
+        return element;
     },
     styles: {
         ".action": {

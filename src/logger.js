@@ -1,6 +1,5 @@
-import { render, reactive } from "@gmartigny/whiskers.js";
-import bus from "./bus.js";
-import { variables } from "./css.js";
+import { render } from "@gmartigny/whiskers.js";
+import { variables } from "./css";
 
 /**
  * @typedef {Object} Log
@@ -8,24 +7,13 @@ import { variables } from "./css.js";
  * @prop {string} message
  */
 
-/**
- * @type {{logs: Log[]}}
- */
-const list = {
-    logs: [],
-};
-
 export const events = {
-    addLog: Symbol("add-log"),
+    addLog: "add-log",
 };
 
 export const types = {
     quote: "quote",
 };
-
-bus.on(events.addLog, (log) => {
-    list.logs.unshift(log);
-});
 
 /**
  * @param {string} string Any string
@@ -39,30 +27,21 @@ function format (string, data) {
 }
 
 export default {
-    render: reactive(
-        list,
-        "logs",
-        (value, node) => render(node ?? "ul", {
-            class: "logs",
-        }, value),
-        (value, node) => render(node ?? "li", {
-            class: `log ${value.type}`,
-        }, [format(value.message, value.data)]),
-    ),
+    render: (value, node) => render(node, {
+        class: `log ${value.type ?? ""}`,
+    }, [format(value.message, value.data)]),
     styles: {
-        ".logs": {
-            ".log": {
-                "&.quote": {
-                    "font-style": "italic",
-                    "font-size": "1.5em",
-                    color: variables.grey,
+        ".log": {
+            "&.quote": {
+                "font-style": "italic",
+                "font-size": "1.5em",
+                color: variables.grey,
 
-                    "&:before": {
-                        content: "'«'",
-                    },
-                    "&:after": {
-                        content: "'»'",
-                    },
+                "&:before": {
+                    content: "'«'",
+                },
+                "&:after": {
+                    content: "'»'",
                 },
             },
         },

@@ -1,11 +1,13 @@
 import { renderStyle } from "@gmartigny/whiskers.js";
-import { variables } from "./css.js";
-
-import game from "./game.js";
+import { variables } from "./css";
+import game from "./game";
 
 document.body.appendChild(game.render());
 
 document.head.appendChild(renderStyle({
+    html: {
+        overflow: "hidden",
+    },
     body: {
         background: variables.black,
     },
@@ -14,9 +16,6 @@ document.head.appendChild(renderStyle({
         padding: "0",
         "box-sizing": "border-box",
         color: "#fff",
-    },
-    ul: {
-        "list-style": "none",
     },
 
     ...game.styles,

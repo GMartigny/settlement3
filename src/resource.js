@@ -1,15 +1,23 @@
-import { render } from "@gmartigny/whiskers.js";
+import { render, reactive } from "@gmartigny/whiskers.js";
 
 export const events = {
-    earn: Symbol("earn-resource"),
-    consume: Symbol("consume-resource"),
+    earn: "earn-resource",
+    consume: "consume-resource",
 };
 
 export default {
-    render (value, node) {
-        return render(node ?? "li", {
+    render ([amount, resource], node) {
+        const data = {
+            amount,
+            resource,
+        };
+
+        return render(node ?? "div", {
             class: "resource",
-        });
+        }, [
+            reactive(data, "amount", value => render("span", undefined, [value])),
+            resource.name,
+        ]);
     },
     styles: {
         ".resource": {

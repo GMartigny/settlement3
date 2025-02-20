@@ -1,7 +1,7 @@
-import bus from "./bus.js";
-import { events as personEvents } from "./person.js";
-import timer from "./timer.js";
-import { events as loggerEvent, types as loggerTypes } from "./logger.js";
+import { events as personEvents } from "./person";
+import timer from "./timer";
+import { events as loggerEvent, types as loggerTypes } from "./logger";
+import { dispatch } from "./utils";
 
 export const resources = {
     water: {
@@ -33,8 +33,8 @@ export const actions = (() => {
         name: "Recruit",
         time: 100,
         energy: 30,
-        onEnd () {
-            bus.fire(personEvents.arrive, {
+        onEnd (element) {
+            dispatch(personEvents.arrive, element, {
                 name: "Bot",
             });
         },
@@ -60,9 +60,9 @@ export const actions = (() => {
         log: "@person.name wake up with difficulty.",
         once: true,
         unlock: [lookAround],
-        onEnd () {
+        onEnd ({ parentNode }) {
             timer(() => {
-                bus.fire(loggerEvent.addLog, {
+                dispatch(loggerEvent.addLog, parentNode, {
                     type: loggerTypes.quote,
                     message: "Where am I ?",
                 });

@@ -42,9 +42,22 @@ function clamp (value, min, max) {
     return Math.min(max, Math.max(min, value));
 }
 
+/**
+ * @param {string} eventName Event's name
+ * @param {EventTarget} [target=window] Triggering element
+ * @param {Object} [detail] Some details to attach
+ */
+function dispatch (eventName, target = window, detail = undefined) {
+    target.dispatchEvent(new CustomEvent(eventName, {
+        bubbles: true,
+        detail,
+    }));
+}
+
 export {
     join,
     random,
     pluralize,
     clamp,
+    dispatch,
 };

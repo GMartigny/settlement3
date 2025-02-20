@@ -1,40 +1,38 @@
 import { render, reactive } from "@gmartigny/whiskers.js";
-import resource, { events as resourceEvents } from "./resource.js";
-import person, { events as personEvent } from "./person.js";
-import bus from "./bus.js";
-import { actions } from "./data.js";
+import resource, { events as resourceEvents } from "./resource";
+import person, { events as personEvent } from "./person";
+import { actions } from "./data";
 import { flow } from "./css";
-import logger from "./logger";
+import logger, { events as loggerEvents } from "./logger";
+import display from "./display";
+import { dispatch } from "./utils";
 
 export default {
     render () {
         const game = {
             resources: [],
             persons: [],
+            logs: [],
         };
 
-        setTimeout(() => {
-            bus.fire(personEvent.arrive, {
-                name: "Alice",
-                actions: [
-                    actions.wakeUp,
-                ],
-            });
-        }, 1000);
-
-        bus.on(resourceEvents.earn, (newResource) => {
-            game.resources.push(newResource);
+        const displayContainer = render("div", {
+            class: "display",
         });
 
-        bus.on(personEvent.arrive, (newArrival) => {
-            game.persons.push(newArrival);
-        });
-        bus.on(personEvent.die, (dead) => {
-            game.persons.splice(game.persons.indexOf(dead), 1);
-        });
-
-        return render("main", {
+        const element = render("main", {
             class: "game",
+            [`@${loggerEvents.addLog}`]: ({ detail }) => {
+                game.logs.unshift(detail);
+            },
+            [`@${resourceEvents.earn}`]: ({ detail }) => {
+                game.resources.push(...detail);
+            },
+            [`@${personEvent.arrive}`]: ({ detail }) => {
+                game.persons.push(detail);
+            },
+            [`@${personEvent.die}`]: ({ detail }) => {
+                game.persons.splice(game.persons.indexOf(detail), 1);
+            },
         }, [
             reactive(
                 game,
@@ -50,27 +48,72 @@ export default {
                 reactive(
                     game,
                     "persons",
-                    (init, list) => render(list ?? "ul", {
+                    (init, list) => render(list, {
                         class: "persons",
                     }, init),
                     person.render,
                 ),
-                logger.render,
+                reactive(
+                    game,
+                    "logs",
+                    (init, list) => render(list, {
+                        class: "logs",
+                    }),
+                    logger.render,
+                ),
             ]),
+            displayContainer,
         ]);
+
+        setTimeout(() => {
+            display.render(displayContainer);
+        });
+
+        setTimeout(() => {
+            dispatch(personEvent.arrive, element, {
+                name: "Alice",
+                actions: [
+                    actions.wakeUp,
+                ],
+            });
+        }, 1000);
+
+        return element;
     },
     styles: {
         ".game": {
+            height: "100vh",
+            overflow: "hidden",
+            ...flow.flexCol(),
+
+            ".resources": {
+                ...flow.flex(),
+                padding: "1em",
+                background: "#533d20",
+
+                "&:empty": {
+                    transform: "translateY(-100%)",
+                },
+
+                ...resource.styles,
+            },
             ".content": {
+                flex: 1,
                 ...flow.flex(),
 
                 ".logs, .persons": {
                     flex: "1 50%",
+                    ...flow.flexCol(),
                 },
-                ...logger.styles,
                 ".persons": {
                     ...person.styles,
                 },
+                ".logs": {
+                    ...logger.styles,
+                },
+            },
+            ".display": {
+                flex: 1,
             },
         },
     },
