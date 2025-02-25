@@ -25,7 +25,15 @@ export default {
                 game.logs.unshift(detail);
             },
             [`@${resourceEvents.earn}`]: ({ detail }) => {
-                game.resources.push(...detail);
+                detail.forEach(([amount, res]) => {
+                    const possessed = game.resources.find(([, has]) => has === res);
+                    if (possessed) {
+                        game.resources.splice(game.resources.indexOf(possessed), 1, [possessed[0] + amount, res]);
+                    }
+                    else {
+                        game.resources.push([amount, res]);
+                    }
+                });
             },
             [`@${personEvent.arrive}`]: ({ detail }) => {
                 game.persons.push(detail);
@@ -73,7 +81,7 @@ export default {
             dispatch(personEvent.arrive, element, {
                 name: "Alice",
                 actions: [
-                    actions.wakeUp,
+                    actions.gather,
                 ],
             });
         }, 1000);

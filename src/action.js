@@ -1,6 +1,6 @@
-import { render } from "@gmartigny/whiskers.js";
+import { reactive, render } from "@gmartigny/whiskers.js";
 import timer from "./timer";
-import { clickable } from "./css";
+import { clickable, loading } from "./css";
 import { dispatch } from "./utils";
 
 export const events = {
@@ -9,35 +9,40 @@ export const events = {
 };
 
 export default {
-    render (value, node) {
+    render (action) {
+        action.doing = false;
         let element;
         /**
          */
         function done () {
-            value.onEnd?.(element);
-            dispatch(events.end, element, value);
+            action.doing = false;
+            action.onEnd?.(element);
+            dispatch(events.end, element, action);
         }
 
-        element = render(node ?? "button", {
-            class: "action",
+        element = reactive(action, "doing", (value, node) => render(node ?? "button", {
+            class: `action ${action.doing ? "loading" : ""}`,
+            "--time": `${action.time ?? 0}ms`,
             "@click": () => {
-                dispatch(events.start, element, value);
-                if (value.time) {
-                    timer(done, value.time);
+                action.doing = true;
+                dispatch(events.start, element, action);
+                if (action.time) {
+                    timer(done, action.time);
                 }
                 else {
                     done();
                 }
             },
         }, [
-            value.name,
-        ]);
+            action.name,
+        ]));
 
         return element;
     },
     styles: {
         ".action": {
             ...clickable,
+            ...loading,
         },
     },
 };

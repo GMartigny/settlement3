@@ -1,6 +1,6 @@
 import { render, reactive } from "@gmartigny/whiskers.js";
 import action, { events as actionEvents } from "./action";
-import { flow } from "./css";
+import { flow, variables } from "./css";
 import { events as loggerEvents } from "./logger";
 import { pluralize, join, dispatch } from "./utils";
 import { events as resourceEvents } from "./resource";
@@ -33,7 +33,12 @@ export default {
 
                 if (detail.unlock?.length) {
                     data.unlock = detail.unlock;
-                    value.actions.push(...detail.unlock);
+                    value.actions.push(...detail.unlock.filter(unlocked => !value.actions.includes(unlocked)));
+                }
+
+                if (detail.lock?.length) {
+                    data.lock = detail.lock;
+                    value.actions = value.actions.filter(locked => !detail.lock.includes(locked));
                 }
 
                 if (detail.earn?.length) {
@@ -67,7 +72,8 @@ export default {
     },
     styles: {
         ".person": {
-            padding: "2em",
+            padding: "1em",
+            border: `1px dashed ${variables.primary}`,
 
             ".actions": {
                 ...flow.flex(),

@@ -26,3 +26,20 @@ export const clickable = {
         color: variables.black,
     },
 };
+
+export const loading = {
+    "&.loading": {
+        animation: "loading linear",
+        "animation-duration": "var(--time)",
+    },
+    "@keyframes loading": {
+        "0%": {
+            opacity: 0,
+            // "box-shadow": "0 0 0 .5lh inset rgba(255, 255, 255, .5)",
+        },
+        "100%": {
+            opacity: 1,
+            // "box-shadow": "0 0 0 inset rgba(255, 255, 255, .5)",
+        },
+    },
+};
