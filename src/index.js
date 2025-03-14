@@ -1,5 +1,5 @@
 import { renderStyle } from "@gmartigny/whiskers.js";
-import { variables } from "./css";
+import { variables, animations } from "./css";
 import game from "./game";
 
 document.body.appendChild(game.render());
@@ -17,6 +17,7 @@ document.head.appendChild(renderStyle({
         "box-sizing": "border-box",
         color: "#fff",
     },
+    ...animations,
 
     ...game.styles,
 }));

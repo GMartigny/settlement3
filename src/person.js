@@ -21,6 +21,11 @@ export default {
     render (value, node) {
         const element = render(node, {
             class: "person",
+            [`@${actionEvents.start}`]: ({ detail }) => {
+                if (detail.consume) {
+                    dispatch(resourceEvents.consume, element, detail.consume);
+                }
+            },
             [`@${actionEvents.end}`]: ({ detail }) => {
                 const data = {
                     person: value,

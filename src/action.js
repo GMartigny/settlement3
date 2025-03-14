@@ -12,7 +12,9 @@ export default {
     render (action) {
         action.doing = false;
         let element;
+
         /**
+         * End action
          */
         function done () {
             action.doing = false;
@@ -20,10 +22,11 @@ export default {
             dispatch(events.end, element, action);
         }
 
-        element = reactive(action, "doing", (value, node) => render(node ?? "button", {
-            class: `action ${action.doing ? "loading" : ""}`,
-            "--time": `${action.time ?? 0}ms`,
-            "@click": () => {
+        /**
+         * Start action
+         */
+        function start () {
+            if (!action.doing) {
                 action.doing = true;
                 dispatch(events.start, element, action);
                 if (action.time) {
@@ -32,7 +35,14 @@ export default {
                 else {
                     done();
                 }
-            },
+            }
+        }
+
+        element = reactive(action, "doing", (value, node) => render(node ?? "button", {
+            class: `action ${action.doing ? "loading" : ""}`,
+            ".disabled": action.doing ? "disabled" : false,
+            "--time": `${action.time ?? 0}ms`,
+            "@click": start,
         }, [
             action.name,
         ]));

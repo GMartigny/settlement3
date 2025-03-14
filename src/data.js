@@ -106,69 +106,55 @@ resources.craftables = {
     advanced: [resources.jewelry, resources.engine, resources.computer],
 };
 
-export const actions = (() => {
-    const roam = {
-        name: "Roam",
-        time: 2000,
-        energy: 15,
-        consume: [[1, resources.water]],
-        log: "After some roaming around, @person.name found nothing.",
-    };
-    const gather = {
-        name: "Gather",
-        time: 1000,
-        energy: 10,
-        earn: [[5, resources.water], [2, resources.food]],
-        log: "@person.name brings back @earn",
-        unlock: [roam],
-    };
-    const recruit = {
-        name: "Recruit",
-        time: 100,
-        energy: 30,
-        onEnd (element) {
-            dispatch(personEvents.arrive, element, {
-                name: "Bot",
+const roam = {
+    name: "Roam",
+    time: 2000,
+    energy: 15,
+    consume: [[1, resources.water]],
+    log: "After some roaming around, @person.name found nothing.",
+};
+const gather = {
+    name: "Gather",
+    time: 1000,
+    energy: 10,
+    earn: [[5, resources.water], [2, resources.food]],
+    log: "@person.name brings back @earn",
+    unlock: [roam],
+};
+const settle = {
+    name: "Settle",
+    time: 3000,
+    energy: 10,
+    log: "Regrouping some aluminum panels and torn clothes, @person.name manage to construct a basic shelter.",
+    once: true,
+    unlock: [gather],
+};
+const lookAround = {
+    name: "Look around",
+    time: 500,
+    log: "@person.name looks around, but find nothing but a burning shipwreck with @earn inside.",
+    once: true,
+    earn: [[10, resources.water], [5, resources.food]],
+    unlock: [settle],
+};
+const wakeUp = {
+    name: "Wake up",
+    log: "@person.name wake up with difficulty.",
+    once: true,
+    unlock: [lookAround],
+    onEnd ({ parentNode }) {
+        timer(() => {
+            dispatch(loggerEvent.addLog, parentNode, {
+                type: loggerTypes.quote,
+                message: "Where am I ?",
             });
-        },
-    };
-    const settle = {
-        name: "Settle",
-        time: 3000,
-        energy: 10,
-        log: "Regrouping some aluminum panels and torn clothes, @person.name manage to construct a basic shelter.",
-        once: true,
-        unlock: [gather, recruit],
-    };
-    const lookAround = {
-        name: "Look around",
-        time: 500,
-        log: "@person.name looks around, but find nothing but a burning shipwreck with @earn inside.",
-        once: true,
-        earn: [[10, resources.water], [5, resources.food]],
-        unlock: [settle],
-    };
-    const wakeUp = {
-        name: "Wake up",
-        log: "@person.name wake up with difficulty.",
-        once: true,
-        unlock: [lookAround],
-        onEnd ({ parentNode }) {
-            timer(() => {
-                dispatch(loggerEvent.addLog, parentNode, {
-                    type: loggerTypes.quote,
-                    message: "Where am I ?",
-                });
-            }, 500);
-        },
-    };
-
-    return {
-        wakeUp,
-        lookAround,
-        settle,
-        gather,
-        roam,
-        recruit,
-    };
-})();
+        }, 500);
+    },
+};
+export const actions = {
+    wakeUp,
+    lookAround,
+    settle,
+    gather,
+    roam,
+};

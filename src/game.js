@@ -24,6 +24,17 @@ export default {
             [`@${loggerEvents.addLog}`]: ({ detail }) => {
                 game.logs.unshift(detail);
             },
+            [`@${resourceEvents.consume}`]: ({ detail }) => {
+                detail.forEach(([amount, res]) => {
+                    const possessed = game.resources.find(([, has]) => has === res);
+                    if (possessed) {
+                        game.resources.splice(game.resources.indexOf(possessed), 1, [possessed[0] - amount, res]);
+                    }
+                    else {
+                        throw new Error(`Resource ${res.name} not found`);
+                    }
+                });
+            },
             [`@${resourceEvents.earn}`]: ({ detail }) => {
                 detail.forEach(([amount, res]) => {
                     const possessed = game.resources.find(([, has]) => has === res);

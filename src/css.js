@@ -4,6 +4,17 @@ export const variables = {
     grey: "#86898a",
 };
 
+export const animations = {
+    "@keyframes loading": {
+        "0%": {
+            "box-shadow": "0 0 0 1lh inset var(--loading-color)",
+        },
+        "100%": {
+            "box-shadow": "0 0 0 inset var(--loading-color)",
+        },
+    },
+};
+
 export const flow = {
     flex: (gap = "1em") => ({
         display: "flex",
@@ -29,17 +40,8 @@ export const clickable = {
 
 export const loading = {
     "&.loading": {
+        "--loading-color": variables.primary,
         animation: "loading linear",
         "animation-duration": "var(--time)",
-    },
-    "@keyframes loading": {
-        "0%": {
-            opacity: 0,
-            // "box-shadow": "0 0 0 .5lh inset rgba(255, 255, 255, .5)",
-        },
-        "100%": {
-            opacity: 1,
-            // "box-shadow": "0 0 0 inset rgba(255, 255, 255, .5)",
-        },
     },
 };
