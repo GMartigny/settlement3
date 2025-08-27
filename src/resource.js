@@ -20,7 +20,6 @@ export default {
         ]);
     },
     styles: {
-        ".resource": {
-        },
+        ".resource": {},
     },
 };
